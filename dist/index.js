@@ -4,10 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+//Importar Variaveis de Ambiente
+const dotenv_1 = __importDefault(require("dotenv"));
+//Carregando as Variaveis 
+dotenv_1.default.config();
 const app = (0, express_1.default)();
-app.get("/", (req, res) => {
-    res.send("Olá, mundo!");
-});
-app.listen(8080, () => {
-    console.log("Servidor iniciado na porta 8080: http://localhost:8080");
+//incluir os Controllers
+const login_1 = __importDefault(require("./controllers/login"));
+//Criar as rotas
+app.use('/', login_1.default);
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor iniciado na porta ${process.env.PORT}: http://localhost:${process.env.PORT}`);
 });
