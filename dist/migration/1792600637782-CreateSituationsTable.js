@@ -15,7 +15,7 @@ class CreateSituationsTable1792600637782 {
     up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
             yield queryRunner.createTable(new typeorm_1.Table({
-                name: "situations",
+                name: "situation",
                 columns: [
                     {
                         name: "id",
@@ -27,6 +27,7 @@ class CreateSituationsTable1792600637782 {
                     {
                         name: "nameSituation",
                         type: "varchar",
+                        isUnique: true
                     },
                     {
                         name: "createdAt",
@@ -45,7 +46,7 @@ class CreateSituationsTable1792600637782 {
     }
     down(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.dropTable("situations");
+            yield queryRunner.dropTable("situation");
         });
     }
 }

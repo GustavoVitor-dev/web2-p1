@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany,  } from "typeorm"
 import { User } from "./Users";
 
-@Entity("situation")
+@Entity("situations")
 export class Situation {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({unique: true})
     nameSituation!: string;
 
     @Column({type: "timestamp", default: () => "CURRENT_TIMESTAMP"})

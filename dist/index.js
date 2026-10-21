@@ -4,15 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-//Importar Variaveis de Ambiente
 const dotenv_1 = __importDefault(require("dotenv"));
-//Carregando as Variaveis 
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 //incluir os Controllers
-const login_1 = __importDefault(require("./controllers/login"));
+//Middleware
+app.use(express_1.default.json());
+const AuthController_1 = __importDefault(require("./controllers/AuthController"));
+const SituationsController_1 = __importDefault(require("./controllers/SituationsController"));
 //Criar as rotas
-app.use('/', login_1.default);
-app.listen(process.env.PORT, () => {
-    console.log(`Servidor iniciado na porta ${process.env.PORT}: http://localhost:${process.env.PORT}`);
+app.use('/', AuthController_1.default);
+app.use('/', SituationsController_1.default);
+app.listen(8080, () => {
+    console.log("Servidor iniciado na porta 8080: http://localhost:8080");
 });

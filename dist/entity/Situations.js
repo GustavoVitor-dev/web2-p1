@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Situation.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], Situation.prototype, "nameSituation", void 0);
 __decorate([
@@ -36,5 +36,5 @@ __decorate([
     __metadata("design:type", Array)
 ], Situation.prototype, "users", void 0);
 exports.Situation = Situation = __decorate([
-    (0, typeorm_1.Entity)("situation")
+    (0, typeorm_1.Entity)("situations")
 ], Situation);

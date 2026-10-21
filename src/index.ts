@@ -1,18 +1,22 @@
 import express from "express";
-//Importar Variaveis de Ambiente
 import dotenv from "dotenv";
-//Carregando as Variaveis 
-dotenv.config()
+
+dotenv.config();
 
 const app = express();
 //incluir os Controllers
 
-import login from"./controllers/login"
+//Middleware
+app.use(express.json());
+
+import AuthController from"./controllers/AuthController";
+import SituationsController from "./controllers/SituationsController";
 
 //Criar as rotas
-app.use('/', login)
+app.use('/', AuthController)
+app.use('/', SituationsController)
 
 
-app.listen(process.env.PORT , ()=>{
-    console.log(`Servidor iniciado na porta ${process.env.PORT}: http://localhost:${process.env.PORT}`)
+app.listen(8080, ()=>{
+    console.log("Servidor iniciado na porta 8080: http://localhost:8080")
 });
