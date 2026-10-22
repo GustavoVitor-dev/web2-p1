@@ -4,14 +4,62 @@ import { Situation } from "../entity/Situations";
 import { AppDataSource } from "../data-source";
 //Criar aplicação express
 const router = express.Router();
+
+
 //Criar a Lista 
 router.get("/situations", async(req: Request, res: Response)=>{
     try {
+        //Obter o repositório da entidade Situation
         const situationRepository = AppDataSource.getRepository(Situation);
 
-        const situations = await situationRepository.find();
+        //Receber o numero da pagina e definir pagina 1 como padrão
+        const page = Number(req.query.page) || 1;
+        
+        //Definir o limite de registros por página 
+        const limit = 2;
 
-        res.status(200).json(situations);
+
+        //Contar o total de registros no banco de dados
+        const totalSituations = await situationRepository.count();
+
+        //Verificar se  existem registros 
+        if(totalSituations === 0){
+            res.status(400).json({
+                message: "Nenhuma situação encontrada"
+            });
+            return;
+        }
+        
+        //Calcular a última pagina 
+        const lastPage = Math.ceil(totalSituations / limit);
+
+        //Verificar se a página solicitada é válida 
+        if(page > lastPage){
+            res.status(400).json({
+                message: `A página solicitada é inválida. O total de páginas é ${lastPage}.`
+            });
+            return;
+        }
+
+        //Calcular o offset (a partir de qual registro começar a busca)
+        const offset = (page - 1) * limit;
+
+        //Recuperar as situações do banco de dados com paginação 
+
+        const situations = await situationRepository.find({
+            take: limit,
+            skip: offset,
+            order: {id: "DESC"}
+        });
+
+        //Retornar a resposta com os dados e informações de paginação
+
+        res.status(200).json({
+            currentPage: page,
+            lastPage,
+            totalSituations,
+            situations,
+        });
         return;
     
     }catch (error) {
