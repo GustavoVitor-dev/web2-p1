@@ -50,7 +50,7 @@ router.get("/situations/:id", (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         res.status(500).json({
-            message: "Erro ao listar situações"
+            message: "Erro ao visualizar situação"
         });
         return;
     }
@@ -72,6 +72,62 @@ router.post("/situations", (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).json({
             message: "Erro ao cadastrar situação"
         });
+    }
+}));
+//Criar rota PUT
+router.put("/situations/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        var data = req.body;
+        const situationRepository = data_source_1.AppDataSource.getRepository(Situations_1.Situation);
+        const situation = yield situationRepository.findOneBy({ id: parseInt(id) });
+        if (!situation) {
+            res.status(404).json({
+                message: "Situação não encontrada"
+            });
+            return;
+        }
+        //Atualiza os dados 
+        situationRepository.merge(situation, data);
+        //Salvar as alterações de dados
+        const updatedSituation = yield situationRepository.save(situation);
+        res.status(200).json({
+            message: "Situação atualizada com sucesso",
+            situation: updatedSituation
+        });
+        return;
+    }
+    catch (error) {
+        res.status(500).json({
+            message: "Erro ao atualizar situação"
+        });
+        return;
+    }
+}));
+//Criar rota DELETE
+router.delete("/situations/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const situationRepository = data_source_1.AppDataSource.getRepository(Situations_1.Situation);
+        const situation = yield situationRepository.findOneBy({ id: parseInt(id) });
+        if (!situation) {
+            res.status(404).json({
+                message: "Situação não encontrada"
+            });
+            return;
+        }
+        //Remover os dados no banco de dados
+        yield situationRepository.remove(situation);
+        res.status(200).json({
+            message: "Situação removida com sucesso"
+        });
+        return;
+    }
+    catch (error) {
+        res.status(500).json({
+            message: "Erro ao atualizar situação"
+        });
+        return;
     }
 }));
 //Exportar instruçoes da rota 
