@@ -1,5 +1,6 @@
 import { AppDataSource } from "./data-source";
 import CreateSituationSeeds from "./seeds/CreateSituationSeeds";
+import CreateUserSeeds from "./seeds/CreateUserSeeds";
 
 const runSeeds = async () => {
     console.log("Conectando ao banco de dados...")
@@ -12,9 +13,11 @@ const runSeeds = async () => {
         //Cria a instancia da classes de seed
 
         const situationsSeeds = new CreateSituationSeeds();
+        const usersSeeds = new CreateUserSeeds();
 
         //Executa o seed 
         await situationsSeeds.run(AppDataSource);
+        await usersSeeds.run(AppDataSource);
 
     }catch (error) {
 

@@ -4,7 +4,7 @@ export class CreateSituationsTable1792600637782 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(new Table({
-            name: "situation",
+            name: "situations",
             columns: [
                 {
                     name: "id",
@@ -34,7 +34,7 @@ export class CreateSituationsTable1792600637782 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("situation");
+        await queryRunner.dropTable("situations");
     }
 
 }

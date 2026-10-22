@@ -11,10 +11,12 @@ app.use(express.json());
 
 import AuthController from"./controllers/AuthController";
 import SituationsController from "./controllers/SituationsController";
+import UsersController from "./controllers/UsersController";
 
 //Criar as rotas
 app.use('/', AuthController)
 app.use('/', SituationsController)
+app.use('/', UsersController)
 
 
 app.listen(8080, ()=>{
