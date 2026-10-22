@@ -18,10 +18,43 @@ const Situations_1 = require("../entity/Situations");
 const data_source_1 = require("../data-source");
 //Criar aplicação express
 const router = express_1.default.Router();
-//Criar rota GET principal 
-router.get("/situations", (req, res) => {
-    res.send("Olá, mundo! tela de situações da rota");
-});
+//Criar a Lista 
+router.get("/situations", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const situationRepository = data_source_1.AppDataSource.getRepository(Situations_1.Situation);
+        const situations = yield situationRepository.find();
+        res.status(200).json(situations);
+        return;
+    }
+    catch (error) {
+        res.status(500).json({
+            message: "Erro ao listar situações"
+        });
+        return;
+    }
+}));
+//Criar a visualização do item cadastrado em situação
+router.get("/situations/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const situationRepository = data_source_1.AppDataSource.getRepository(Situations_1.Situation);
+        const situation = yield situationRepository.findOneBy({ id: parseInt(id) });
+        if (!situation) {
+            res.status(404).json({
+                message: "Situação não encontrada"
+            });
+            return;
+        }
+        res.status(200).json(situation);
+        return;
+    }
+    catch (error) {
+        res.status(500).json({
+            message: "Erro ao listar situações"
+        });
+        return;
+    }
+}));
 //Criar rota POST 
 router.post("/situations", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
