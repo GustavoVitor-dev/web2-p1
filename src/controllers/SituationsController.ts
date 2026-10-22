@@ -148,7 +148,7 @@ router.delete("/situations/:id", async(req: Request<{ id: string }>, res: Respon
     
     }catch (error) {
         res.status(500).json({ 
-            message: "Erro ao atualizar situação" 
+            message: "Erro ao remover situação" 
         });
         return;
     }
