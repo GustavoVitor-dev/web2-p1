@@ -34,6 +34,7 @@
     "content-type": "^1.0.5",
     "cookie": "^0.7.2",
     "cookie-signature": "^1.2.2",
+    "cors": "^2.8.5",
     "create-require": "^1.1.1",
     "debug": "^4.4.3",
     "depd": "^2.0.0",
@@ -104,6 +105,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
     "concurrently": "^10.0.5",

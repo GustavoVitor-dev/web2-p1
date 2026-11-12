@@ -1,5 +1,9 @@
 import express from "express";
+
 import dotenv from "dotenv";
+
+//Importar Biblioteca pra permitir conexâo externa 
+import cors from "cors";
 
 dotenv.config();
 
@@ -9,6 +13,10 @@ const app = express();
 //Middleware
 app.use(express.json());
 
+//Criar middleware para permitir requisições externas
+app.use(cors());
+
+import TestConnectionController from "./controllers/TestConnectionController";
 import AuthController from"./controllers/AuthController";
 import SituationsController from "./controllers/SituationsController";
 import UsersController from "./controllers/UsersController";
@@ -17,6 +25,7 @@ import ProductCategoriesController from "./controllers/ProductCategoriesControll
 import ProductsController from "./controllers/ProductsController";
 
 //Criar as rotas
+app.use('/', TestConnectionController)
 app.use('/', AuthController)
 app.use('/', SituationsController)
 app.use('/', UsersController)
