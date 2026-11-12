@@ -3,6 +3,8 @@ import express, {Request, Response} from "express";
 import { Situation } from "../entity/Situations";
 import { AppDataSource } from "../data-source";
 import { PaginationService } from "../services/PaginationServices";
+import * as yup from 'yup';
+
 //Criar aplicação express
 const router = express.Router();
 
@@ -67,7 +69,15 @@ router.post("/situations", async (req: Request, res: Response)=>{
 
     try {
         var data = req.body;
-        console.log(req.body);
+        
+
+        const schema = yup.object().shape({
+            nameSituation: yup.string()
+                .required("O nome da situação é obrigatório")
+                .min(3, "O nome da situação deve ter no mínimo 3 caracteres")
+        });
+
+        await schema.validate(data, { abortEarly: false });
 
         const situationRepository = AppDataSource.getRepository(Situation);
         
@@ -81,6 +91,13 @@ router.post("/situations", async (req: Request, res: Response)=>{
         });
 
     } catch (error) {
+
+        if (error instanceof yup.ValidationError) {
+         res.status(400).json({ 
+            message: error.errors 
+        });
+        return;
+    }
         res.status(500).json({ 
             message: "Erro ao cadastrar situação" 
         });
@@ -94,6 +111,15 @@ router.put("/situations/:id", async(req: Request<{ id: string }>, res: Response)
         const { id } = req.params;
 
         var data = req.body;
+
+         const schema = yup.object().shape({
+            nameSituation: yup.string()
+                .required("O nome da situação é obrigatório")
+                .min(3, "O nome da situação deve ter no mínimo 3 caracteres")
+        });
+
+        await schema.validate(data, { abortEarly: false });
+
         
         const situationRepository = AppDataSource.getRepository(Situation);
 
@@ -116,10 +142,16 @@ router.put("/situations/:id", async(req: Request<{ id: string }>, res: Response)
         return;
     
     }catch (error) {
+
+          if (error instanceof yup.ValidationError) {
+         res.status(400).json({ 
+            message: error.errors 
+        });
+        return;
+    }
         res.status(500).json({ 
             message: "Erro ao atualizar situação" 
         });
-        return;
     }
 });
 
