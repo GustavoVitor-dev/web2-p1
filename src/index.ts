@@ -1,18 +1,39 @@
 import express from "express";
-//Importar Variaveis de Ambiente
+
 import dotenv from "dotenv";
-//Carregando as Variaveis 
-dotenv.config()
+
+//Importar Biblioteca pra permitir conexâo externa 
+import cors from "cors";
+
+dotenv.config();
 
 const app = express();
 //incluir os Controllers
 
-import login from"./controllers/login"
+//Middleware
+app.use(express.json());
+
+//Criar middleware para permitir requisições externas
+app.use(cors());
+
+import TestConnectionController from "./controllers/TestConnectionController";
+import AuthController from"./controllers/AuthController";
+import SituationsController from "./controllers/SituationsController";
+import UsersController from "./controllers/UsersController";
+import ProductSituationsController from "./controllers/ProductSituationsController";
+import ProductCategoriesController from "./controllers/ProductCategoriesController";
+import ProductsController from "./controllers/ProductsController";
 
 //Criar as rotas
-app.use('/', login)
+app.use('/', TestConnectionController)
+app.use('/', AuthController)
+app.use('/', SituationsController)
+app.use('/', UsersController)
+app.use('/', ProductSituationsController)
+app.use('/', ProductCategoriesController)
+app.use('/', ProductsController)
 
 
-app.listen(process.env.PORT , ()=>{
+app.listen(process.env.PORT, ()=>{
     console.log(`Servidor iniciado na porta ${process.env.PORT}: http://localhost:${process.env.PORT}`)
 });

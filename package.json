@@ -34,6 +34,7 @@
     "content-type": "^1.0.5",
     "cookie": "^0.7.2",
     "cookie-signature": "^1.2.2",
+    "cors": "^2.8.5",
     "create-require": "^1.1.1",
     "debug": "^4.4.3",
     "depd": "^2.0.0",
@@ -94,15 +95,17 @@
     "toidentifier": "^1.0.1",
     "ts-node": "^10.9.2",
     "type-is": "^2.1.0",
-    "typeorm": "^1.1.2",
+    "typeorm": "^0.3.22",
     "undici-types": "^6.21.0",
     "unpipe": "^1.0.0",
     "v8-compile-cache-lib": "^3.0.1",
     "vary": "^1.1.2",
     "wrappy": "^1.0.2",
-    "yn": "^3.1.1"
+    "yn": "^3.1.1",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
     "concurrently": "^10.0.5",
