@@ -17,7 +17,7 @@ AppDataSource.initialize().then(()=>{
 
 //Criar rota Get principal 
 router.get("/", (req: Request, res: Response)=>{
-    res.send("Olá, mundo! tela de login da rota");
+    res.send("Olá,tela de login da rota");
 });
 
 //Exportar instruçoes da rota 
