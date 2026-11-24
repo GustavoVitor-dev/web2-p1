@@ -1,13 +1,17 @@
 import {DataSource} from "typeorm";
 import { User } from "../entity/Users";
+import { Situation } from "../entity/Situations";
 
 export default class CreateUserSeeds {
 
     public async run(dataSource: DataSource): Promise<void> {
         console.log("Iniciando o seed para a tabela users...");
 
+        //Obter o repositório da entidade User e Situation
         const userRepository = dataSource.getRepository(User);
+        const situationRepository = dataSource.getRepository(Situation);
 
+        //Verifica se já existem registros na tabela
         const existingCount = await userRepository.count();
 
         if (existingCount > 0) {
@@ -15,11 +19,34 @@ export default class CreateUserSeeds {
             return;
         }
 
+        //Buscar a Situação no banco de dados
+        const situation = await situationRepository.findOneBy({ id: 1 });
+
+        //Verificar se encontrou a situação no banco de dados
+        if (!situation) {
+            console.log("Erro: Nenhuma situação encontrada com o id 1.Verifique se a tabela 'Situations' está populada corretamente antes de executar o seed para a tabela 'Users'.");
+            return;
+        }
+
+        //Criar os Usuários com a referência correta à Situação
+
         const users = [
-            {name: "Ana Souza", email: "ana@example.com", situation: {id: 1}},
-            {name: "Bruno Lima", email: "bruno@example.com", situation: {id: 2}},
-            {name: "Carla Mendes", email: "carla@example.com", situation: {id: 3}},
-        ]
+            {
+                id: 1,
+                name: "Adriano Baião",
+                email: "baiao@baiao.com.br",
+                situation: situation
+            },
+            {
+                id: 2,
+                name: "Maria Silva",
+                email: "maria@example.com",
+                situation: situation
+            }
+        
+        ];
+
+        //Salvar os usuários no banco de dados
 
         await userRepository.save(users);
 

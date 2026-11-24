@@ -3,6 +3,8 @@ import express, {Request, Response} from "express";
 import { User } from "../entity/Users";
 import { AppDataSource } from "../data-source";
 import { PaginationService } from "../services/PaginationServices";
+import * as yup from "yup";
+import { Not } from "typeorm";
 //Criar aplicação express
 const router = express.Router();
 
@@ -67,25 +69,59 @@ router.post("/users", async (req: Request, res: Response)=>{
 
     try {
         var data = req.body;
-        console.log(req.body);
-
-        const userRepository = AppDataSource.getRepository(User);
         
+        const schema = yup.object().shape({
+            name: yup.string().required("O nome é obrigatório").min(3, "O nome deve ter no mínimo 3 caracteres"),
+            email: yup.string().email("O email deve ser válido").required("O email é obrigatório"),
+            situation : yup.number().required("A situação é obrigatória"),
+        });
+
+        //Verificar se os dados passaram pela validação
+        await schema.validate(data, {abortEarly: false});
+        
+        //Criar uma instancia do repositório de User
+        const userRepository = AppDataSource.getRepository(User);
+
+        //Recuperar o registro do banco de dados com o valor da coluna email
+        const existingUser = await userRepository.findOne({
+            where: { email: data.email }
+        });
+        
+        if (existingUser) {
+            res.status(400).json({
+                message: "Ja existe um usuário com esse email"
+            });
+            return;
+        }
+
+       // Criar um novo registro
         const newUser = userRepository.create(data);
 
+        //Salvar registro no banco de dados
         await userRepository.save(newUser);
 
+        //Retornar resposta de sucesso 
         res.status(201).json({
             message: "Usuário cadastrado com sucesso",
             user: newUser,
         });
 
     } catch (error) {
-        res.status(500).json({ 
-            message: "Erro ao cadastrar usuário" 
+        if (error instanceof yup.ValidationError) {
+        //Retornar erros de validação
+        res.status(400).json({ 
+            message: error.errors
         });
+        return;
+    }
+
+    //Retornar erro em caso de falha
+    res.status(500).json({ 
+        message: "Erro ao cadastrar usuário"
+    });
     }
 });
+
 
 //Criar rota PUT
 router.put("/users/:id", async(req: Request<{ id: string }>, res: Response)=>{
@@ -93,34 +129,62 @@ router.put("/users/:id", async(req: Request<{ id: string }>, res: Response)=>{
         
         const { id } = req.params;
 
-        var data = req.body;
+        const data = req.body;
+
+        //Validar os dados utilizando o yup
+        const schema = yup.object().shape({
+            name: yup.string().required("O nome é obrigatório").min(3, "O nome deve ter no mínimo 3 caracteres"),
+            email: yup.string().email("O email deve ser válido").required("O email é obrigatório"),
+            situation : yup.number().required("A situação é obrigatória"),
+        });
         
+        //Verificar se os dados passaram pela validação
+        await schema.validate(data, {abortEarly: false});
+
+        //Obter o repositório da entidade User
         const userRepository = AppDataSource.getRepository(User);
 
+        //Buscar o usuário no banco de dados pelo ID
         const user = await userRepository.findOneBy({id: parseInt(id)});
 
+        //Verificar se o usuário foi encontrado
         if(!user){
             res.status(404).json({
                 message: "Usuário não encontrado"});
             return;
         }
+
+        //Verificar se já existe outro usuário com o mesmo email, mas que nao seja o registro atual
+        const existingUser = await userRepository.findOne({
+            where: { 
+                email: data.email, 
+                id: Not(parseInt(id)) // Exclui o próprio registro de busca 
+            },
+        });
         //Atualiza os dados 
         userRepository.merge(user, data);
         //Salvar as alterações de dados
         const updatedUser = await userRepository.save(user);
-
+        //Retornar resposta de sucesso
         res.status(200).json({
             message: "Usuário atualizado com sucesso",
             user: updatedUser
         });
-        return;
-    
-    }catch (error) {
+        
+    } catch (error) {
+        if (error instanceof yup.ValidationError) {
+            //Retornar erros de validação
+            res.status(400).json({ 
+                message: error.errors
+            });
+            return;
+        }
+        //Retornar erro em caso de falha
         res.status(500).json({ 
-            message: "Erro ao atualizar usuário" 
+            message: "Erro ao atualizar usuário"
         });
-        return;
     }
+    
 });
 
 //Criar rota DELETE
@@ -131,7 +195,7 @@ router.delete("/users/:id", async(req: Request<{ id: string }>, res: Response)=>
         
         const userRepository = AppDataSource.getRepository(User);
 
-        const user = await userRepository.findOneBy({id: parseInt(id)});
+        const user = await userRepository.findOneBy({ id: parseInt(id) });
 
         if(!user){
             res.status(404).json({
